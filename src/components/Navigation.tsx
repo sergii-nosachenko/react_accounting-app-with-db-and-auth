@@ -1,5 +1,13 @@
+import {
+  Navbar,
+  Container,
+  Button,
+  Heading,
+  Icon,
+  Level,
+} from 'react-bulma-components';
+
 import { useAppDispatch } from '../redux/hooks';
-import { Navbar, Container, Button, Heading, Icon, Level } from 'react-bulma-components';
 import { setModalState } from '../redux/slices/modalSlice';
 import { setCurrentExpenseId } from '../redux/slices/expenseSlice';
 
@@ -31,25 +39,50 @@ const Navigation: React.FC = () => {
                 <span>Expenses manager</span>
               </Heading>
             </Level.Item>
+            <Level.Item>
+              <Button
+                color="success"
+                className="is-align-self-center"
+                onClick={handleNewExpense}
+              >
+                <Icon aria-label="Add">
+                  <i className="fas fa-plus" />
+                </Icon>
+                <span>Add new expense</span>
+              </Button>
+            </Level.Item>
           </Level.Side>
           <Level.Side align="right">
             <Level.Item>
-              <Button
+              <Button.Group>
+                <Button
                   color="success"
                   className="is-align-self-center"
                   onClick={handleNewExpense}
                 >
                   <Icon aria-label="Add">
-                    <i className="fas fa-plus" />
+                    <i className="fa-solid fa-right-to-bracket" />
                   </Icon>
-                  <span>Add new expense</span>
+                  <span>Log in</span>
                 </Button>
+
+                <Button
+                  color="success"
+                  className="is-align-self-center"
+                  onClick={handleNewExpense}
+                >
+                  <Icon aria-label="Add">
+                    <i className="fa-solid fa-user-plus" />
+                  </Icon>
+                  <span>Sign up</span>
+                </Button>
+              </Button.Group>
             </Level.Item>
           </Level.Side>
         </Level>
       </Container>
     </Navbar>
-  )
-}
+  );
+};
 
 export default Navigation;

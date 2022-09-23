@@ -24,7 +24,7 @@ const initialState: TExpenseState = {
   expenses: [],
   currentExpenseId: null,
   status: EStatus.IDLE,
-}
+};
 
 /* eslint-disable no-param-reassign */
 // Raason of this disabled rule is that Redux toolkit uses "Immer Library"

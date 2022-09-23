@@ -29,4 +29,3 @@ export const addExpense = async (expense: Omit<IExpense, 'id'>) => {
 export const patchExpense = async (expense: IExpense) => {
   await axios.patch(`${BaseURL}/${expense.id}`, expense);
 };
-

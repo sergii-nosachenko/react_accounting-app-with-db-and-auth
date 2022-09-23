@@ -1,17 +1,23 @@
-import Main from './components/Main';
-import Navigation from './components/Navigation';
-import ExpenseModal from './components/ExpenseModal';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+} from 'react-router-dom';
+
+import Login from './pages/Login';
+import Main from './pages/Main';
 
 import '@fortawesome/fontawesome-free/css/all.css';
 import 'bulma/css/bulma.css';
-import './App.css';
+import './App.scss';
 
 export default function App() {
   return (
-    <>
-      <Navigation />
-      <Main />
-      <ExpenseModal />
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/main" element={<Main />} />
+      </Routes>
+    </Router>
   );
 }

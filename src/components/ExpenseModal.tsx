@@ -37,6 +37,6 @@ const ExpenseModal: React.FC = () => {
       </Modal.Card>
     </Modal>
   );
-}
+};
 
 export default ExpenseModal;
