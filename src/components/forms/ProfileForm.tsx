@@ -5,11 +5,16 @@ import {
   useState,
 } from 'react';
 import { Button, Form, Loader } from 'react-bulma-components';
+import {
+  FacebookLoginButton,
+  GithubLoginButton,
+  GoogleLoginButton,
+} from 'react-social-login-buttons';
 
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { setModalState } from '../redux/slices/modalSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { setModalState } from '../../redux/slices/modalSlice';
 
-import { EModal } from '../types/Modal.enum';
+import { EModal } from '../../types/Modal.enum';
 
 const ProfileForm: React.FC = () => {
   const { user } = useAppSelector(state => state.user);
@@ -122,6 +127,22 @@ const ProfileForm: React.FC = () => {
                 </Form.Field>
               </Form.Field.Body>
             </Form.Field>
+          </Form.Field>
+
+          <Form.Field kind="group">
+            <GoogleLoginButton
+              className="social-button"
+              text="Connect Google"
+            />
+
+            <FacebookLoginButton
+              className="social-button"
+              text="Connect Facebook"
+            />
+            <GithubLoginButton
+              className="social-button"
+              text="Connect Github"
+            />
           </Form.Field>
 
           <Form.Field

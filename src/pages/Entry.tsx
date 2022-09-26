@@ -25,8 +25,8 @@ const Entry: React.FC<TProps> = ({ title, children }) => {
           <Columns centered>
             <Columns.Column
               tablet={{ size: 8 }}
-              desktop={{ size: 6 }}
-              widescreen={{ size: 5 }}
+              desktop={{ size: 7 }}
+              widescreen={{ size: 7 }}
             >
               <Box>
                 <Heading size={4} className="has-text-centered py-4">

@@ -8,9 +8,9 @@ import {
 import Entry from './pages/Entry';
 import Main from './pages/Main';
 
-import LoginForm from './components/LoginForm';
-import RegistrationForm from './components/RegistrationForm';
-import ResetPasswordForm from './components/ResetPasswordForm';
+import LoginForm from './components/forms/LoginForm';
+import RegistrationForm from './components/forms/RegistrationForm';
+import ResetPasswordForm from './components/forms/ResetPasswordForm';
 
 import '@fortawesome/fontawesome-free/css/all.css';
 import 'bulma/css/bulma.css';

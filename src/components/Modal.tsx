@@ -1,7 +1,7 @@
 import { Modal } from 'react-bulma-components';
 
-import ProfileForm from './ProfileForm';
-import ExpenseForm from './ExpenseForm';
+import ProfileForm from './forms/ProfileForm';
+import ExpenseForm from './forms/ExpenseForm';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { setModalState } from '../redux/slices/modalSlice';

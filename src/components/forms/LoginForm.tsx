@@ -1,5 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Button, Form, Icon } from 'react-bulma-components';
+import {
+  FacebookLoginButton,
+  GithubLoginButton,
+  GoogleLoginButton,
+} from 'react-social-login-buttons';
 
 const LoginForm: React.FC = () => {
   return (
@@ -42,6 +47,18 @@ const LoginForm: React.FC = () => {
             <i className="fa fa-lock" />
           </Icon>
         </Form.Control>
+      </Form.Field>
+
+      <Form.Field kind="group">
+        <GoogleLoginButton
+          className="social-button"
+        />
+        <FacebookLoginButton
+          className="social-button"
+        />
+        <GithubLoginButton
+          className="social-button"
+        />
       </Form.Field>
 
       <Form.Field className="pt-4">

@@ -6,13 +6,14 @@ import {
 } from 'react';
 import { Button, Form, Loader } from 'react-bulma-components';
 
-import { addExpense, getExpenseById, patchExpense } from '../api/expenses';
+import { addExpense, getExpenseById, patchExpense } from '../../api/expenses';
 
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { fetchExpenses } from '../redux/slices/expenseSlice';
-import { setModalState } from '../redux/slices/modalSlice';
-import { IExpense } from '../types/Expense.interface';
-import { EModal } from '../types/Modal.enum';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { fetchExpenses } from '../../redux/slices/expenseSlice';
+import { setModalState } from '../../redux/slices/modalSlice';
+
+import { IExpense } from '../../types/Expense.interface';
+import { EModal } from '../../types/Modal.enum';
 
 const normalizeDateForDb = (formDate: string) => {
   const normalized = new Date(formDate).toJSON();
