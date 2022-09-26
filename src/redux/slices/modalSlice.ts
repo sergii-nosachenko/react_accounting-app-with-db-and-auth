@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-type TModalVariant = 'new' | 'edit' | null;
+import { EModal } from '../../types/Modal.enum';
 
 type TModalState = {
-  variant: TModalVariant,
+  variant: EModal,
 };
 
 const initialState: TModalState = {
-  variant: null,
+  variant: EModal.NONE,
 };
 
 /* eslint-disable no-param-reassign */
@@ -19,9 +19,9 @@ const modalSlice = createSlice({
   reducers: {
     setModalState: (
       state,
-      action: { type: string, payload: TModalState },
+      action: { type: string, payload: EModal },
     ) => {
-      state.variant = action.payload.variant;
+      state.variant = action.payload;
     },
   },
 });

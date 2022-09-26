@@ -12,6 +12,7 @@ import {
 import { setModalState } from '../redux/slices/modalSlice';
 
 import { IExpense } from '../types/Expense.interface';
+import { EModal } from '../types/Modal.enum';
 
 type TProps = {
   expenses: IExpense[];
@@ -22,7 +23,7 @@ const ExpensesList: React.FC<TProps> = ({ expenses }) => {
 
   const handleOpenEditModal = (expense: IExpense) => {
     dispatch(setCurrentExpenseId(expense.id));
-    dispatch(setModalState({ variant: 'edit' }));
+    dispatch(setModalState(EModal.EDIT_EXPENSE));
   };
 
   const handleDelete = async (expenseId: number) => {

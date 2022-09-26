@@ -13,7 +13,7 @@ import { fetchExpenses } from '../redux/slices/expenseSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { EStatus } from '../types/Status.enum';
 import Navigation from '../components/Navigation';
-import ExpenseModal from '../components/ExpenseModal';
+import ExpenseModal from '../components/Modal';
 
 const Main: React.FC = () => {
   const { expenses, status } = useAppSelector(state => state.expense);

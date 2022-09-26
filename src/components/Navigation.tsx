@@ -11,12 +11,18 @@ import { useAppDispatch } from '../redux/hooks';
 import { setModalState } from '../redux/slices/modalSlice';
 import { setCurrentExpenseId } from '../redux/slices/expenseSlice';
 
+import { EModal } from '../types/Modal.enum';
+
 const Navigation: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const handleNewExpense = () => {
     dispatch(setCurrentExpenseId(null));
-    dispatch(setModalState({ variant: 'new' }));
+    dispatch(setModalState(EModal.NEW_EXPENSE));
+  };
+
+  const handleOpenProfile = () => {
+    dispatch(setModalState(EModal.EDIT_USER));
   };
 
   return (
@@ -30,7 +36,6 @@ const Navigation: React.FC = () => {
             <Level.Item>
               <Heading size={4}>
                 <Icon
-                  aria-label="Delete"
                   className="mr-2"
                   color="success"
                 >
@@ -45,7 +50,7 @@ const Navigation: React.FC = () => {
                 className="is-align-self-center"
                 onClick={handleNewExpense}
               >
-                <Icon aria-label="Add">
+                <Icon>
                   <i className="fas fa-plus" />
                 </Icon>
                 <span>Add new expense</span>
@@ -56,25 +61,25 @@ const Navigation: React.FC = () => {
             <Level.Item>
               <Button.Group>
                 <Button
-                  color="success"
+                  inverted
                   className="is-align-self-center"
-                  onClick={handleNewExpense}
+                  onClick={handleOpenProfile}
                 >
-                  <Icon aria-label="Add">
-                    <i className="fa-solid fa-right-to-bracket" />
+                  <Icon>
+                    <i className="fa-solid fa-user-gear" />
                   </Icon>
-                  <span>Log in</span>
+                  <span>Profile</span>
                 </Button>
 
                 <Button
-                  color="success"
+                  color="danger"
+                  outlined
                   className="is-align-self-center"
-                  onClick={handleNewExpense}
                 >
-                  <Icon aria-label="Add">
-                    <i className="fa-solid fa-user-plus" />
+                  <Icon>
+                    <i className="fa-solid fa-right-from-bracket" />
                   </Icon>
-                  <span>Sign up</span>
+                  <span>Log out</span>
                 </Button>
               </Button.Group>
             </Level.Item>

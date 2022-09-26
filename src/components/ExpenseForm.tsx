@@ -1,4 +1,9 @@
-import { FormEvent, useEffect, useState } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useState,
+} from 'react';
 import { Button, Form, Loader } from 'react-bulma-components';
 
 import { addExpense, getExpenseById, patchExpense } from '../api/expenses';
@@ -7,6 +12,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { fetchExpenses } from '../redux/slices/expenseSlice';
 import { setModalState } from '../redux/slices/modalSlice';
 import { IExpense } from '../types/Expense.interface';
+import { EModal } from '../types/Modal.enum';
 
 const normalizeDateForDb = (formDate: string) => {
   const normalized = new Date(formDate).toJSON();
@@ -46,7 +52,7 @@ const ExpenseForm: React.FC = () => {
     event.preventDefault();
     setIsProcessing(true);
 
-    if (variant === 'new') {
+    if (variant === EModal.NEW_EXPENSE) {
       addExpense({
         user: formUser,
         title: formTitle,
@@ -56,7 +62,7 @@ const ExpenseForm: React.FC = () => {
         note: formNote,
       })
         .then(() => {
-          dispatch(setModalState({ variant: null }));
+          dispatch(setModalState(EModal.NONE));
           dispatch(fetchExpenses());
         })
         .catch(() => {
@@ -64,7 +70,7 @@ const ExpenseForm: React.FC = () => {
         });
     }
 
-    if (variant === 'edit') {
+    if (variant === EModal.EDIT_EXPENSE) {
       if (!currentExpense) {
         setIsProcessing(false);
 
@@ -81,7 +87,7 @@ const ExpenseForm: React.FC = () => {
         note: formNote,
       })
         .then(() => {
-          dispatch(setModalState({ variant: null }));
+          dispatch(setModalState(EModal.NONE));
           dispatch(fetchExpenses());
         })
         .catch(() => {
@@ -91,7 +97,13 @@ const ExpenseForm: React.FC = () => {
   };
 
   const handleCancel = () => {
-    dispatch(setModalState({ variant: null }));
+    dispatch(setModalState(EModal.NONE));
+  };
+
+  const hadleDateChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newDate = normalizeDateForDb(new Date(event.target.value).toJSON());
+
+    setFormDate(newDate);
   };
 
   useEffect(() => {
@@ -139,9 +151,7 @@ const ExpenseForm: React.FC = () => {
               <Form.Input
                 type="text"
                 value={formUser}
-                onChange={(e) => {
-                  return setFormUser(e.target.value);
-                }}
+                onChange={(event) => setFormUser(event.target.value)}
                 required
               />
             </Form.Control>
@@ -153,9 +163,7 @@ const ExpenseForm: React.FC = () => {
               <Form.Input
                 type="text"
                 value={formTitle}
-                onChange={(e) => {
-                  return setFormTitle(e.target.value);
-                }}
+                onChange={(event) => setFormTitle(event.target.value)}
                 required
               />
             </Form.Control>
@@ -168,9 +176,7 @@ const ExpenseForm: React.FC = () => {
                 <Form.Select
                   value={formCategory}
                   className="is-fullwidth"
-                  onChange={(e) => {
-                    return setFormCategory(e.target.value);
-                  }}
+                  onChange={(event) => setFormCategory(event.target.value)}
                   required
                 >
                   <option value="" disabled key={0}>Select category</option>
@@ -207,9 +213,7 @@ const ExpenseForm: React.FC = () => {
                 type="number"
                 min="0"
                 value={formAmount}
-                onChange={(e) => {
-                  return setFormAmount(+e.target.value);
-                }}
+                onChange={(event) => setFormAmount(+event.target.value)}
                 required
               />
             </Form.Control>
@@ -221,13 +225,7 @@ const ExpenseForm: React.FC = () => {
               <Form.Input
                 type="datetime-local"
                 value={normalizeDateForInput(formDate)}
-                onChange={(e) => {
-                  const newDate = normalizeDateForDb(
-                    new Date(e.target.value).toJSON(),
-                  );
-
-                  return setFormDate(newDate);
-                }}
+                onChange={hadleDateChange}
                 required
               />
             </Form.Control>
@@ -238,13 +236,14 @@ const ExpenseForm: React.FC = () => {
             <Form.Textarea
               value={formNote}
               rows={1}
-              onChange={(e) => {
-                return setFormNote(e.target.value);
-              }}
+              onChange={(event) => setFormNote(event.target.value)}
             />
           </Form.Field>
 
-          <Form.Field kind="group">
+          <Form.Field
+            kind="group"
+            className="pt-4"
+          >
             <Form.Control>
               <Button
                 color="success"
