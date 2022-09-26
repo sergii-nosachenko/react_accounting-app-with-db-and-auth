@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   Heading,
   Hero,
@@ -8,10 +9,15 @@ import {
 } from 'react-bulma-components';
 
 type TProps = {
+  title?: string;
   children?: React.ReactElement | React.ReactElement[];
 };
 
-const Entry: React.FC<TProps> = ({ children }) => {
+const Entry: React.FC<TProps> = ({ title, children }) => {
+  useEffect(() => {
+    document.title = title || 'Expenses manager';
+  }, [title]);
+
   return (
     <Hero className="has-background-success is-fullheight">
       <Hero.Body>

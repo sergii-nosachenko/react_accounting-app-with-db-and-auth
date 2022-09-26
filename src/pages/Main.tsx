@@ -21,6 +21,10 @@ const Main: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    document.title = 'Expenses manager';
+  }, []);
+
+  useEffect(() => {
     dispatch(fetchExpenses());
   }, [dispatch]);
 

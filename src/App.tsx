@@ -26,7 +26,7 @@ export default function App() {
         <Route
           path="/login"
           element={(
-            <Entry>
+            <Entry title="Login to app">
               <LoginForm />
             </Entry>
           )}
@@ -35,7 +35,7 @@ export default function App() {
         <Route
           path="/sign-up"
           element={(
-            <Entry>
+            <Entry title="Registration">
               <RegistrationForm />
             </Entry>
           )}
@@ -44,7 +44,7 @@ export default function App() {
         <Route
           path="/reset-password"
           element={(
-            <Entry>
+            <Entry title="Reset password">
               <ResetPasswordForm />
             </Entry>
           )}
@@ -54,7 +54,7 @@ export default function App() {
         <Route
           path="*"
           element={(
-            <Entry>
+            <Entry title="404: Page not found">
               <NotFound />
             </Entry>
           )}
