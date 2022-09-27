@@ -1,7 +1,17 @@
-import { Link } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Form, Icon } from 'react-bulma-components';
+import { useAppSelector } from '../../redux/hooks';
 
 const ResetPasswordForm: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { user } = useAppSelector(state => state.user);
+
+  if (user) {
+    return <Navigate to="/home" state={{ from: location }} replace />;
+  }
+
   return (
     <form>
       <Form.Field>
@@ -26,25 +36,24 @@ const ResetPasswordForm: React.FC = () => {
 
       <Form.Field className="pt-4">
         <Button.Group>
-          <Link to="/login">
-            <Button
-              outlined
-            >
-              <Icon>
-                <i className="fa-solid fa-right-to-bracket" />
-              </Icon>
-              <span>Log in</span>
-            </Button>
-          </Link>
-
           <Button
             color="danger"
-            className="ml-auto"
           >
             <Icon>
               <i className="fa-solid fa-key" />
             </Icon>
             <span>Reset password</span>
+          </Button>
+
+          <Button
+            outlined
+            className="ml-auto"
+            onClick={() => navigate('/login')}
+          >
+            <Icon>
+              <i className="fa-solid fa-right-to-bracket" />
+            </Icon>
+            <span>Log in</span>
           </Button>
         </Button.Group>
       </Form.Field>

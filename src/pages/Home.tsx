@@ -14,11 +14,16 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { EStatus } from '../types/Status.enum';
 import Navigation from '../components/Navigation';
 import ExpenseModal from '../components/Modal';
+import { checkAuth } from '../redux/slices/userSlice';
 
-const Main: React.FC = () => {
+const Home: React.FC = () => {
   const { expenses, status } = useAppSelector(state => state.expense);
 
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, []);
 
   useEffect(() => {
     document.title = 'Expenses manager';
@@ -26,7 +31,7 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchExpenses());
-  }, [dispatch]);
+  }, []);
 
   return (
     <>
@@ -66,4 +71,4 @@ const Main: React.FC = () => {
   );
 };
 
-export default Main;
+export default Home;

@@ -7,6 +7,8 @@ import {
   Columns,
   Box,
 } from 'react-bulma-components';
+import { useAppDispatch } from '../redux/hooks';
+import { setAuthError } from '../redux/slices/userSlice';
 
 type TProps = {
   title?: string;
@@ -17,6 +19,10 @@ const Entry: React.FC<TProps> = ({ title, children }) => {
   useEffect(() => {
     document.title = title || 'Expenses manager';
   }, [title]);
+
+  const dispatch = useAppDispatch();
+
+  dispatch(setAuthError({}));
 
   return (
     <Hero className="has-background-success is-fullheight">

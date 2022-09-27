@@ -2,7 +2,7 @@ import {
   Button, Icon, Form, Table,
 } from 'react-bulma-components';
 
-import { removeExpense } from '../api/expenses';
+import { expensesService } from '../services/expensesService';
 
 import { useAppDispatch } from '../redux/hooks';
 import {
@@ -27,7 +27,7 @@ const ExpensesList: React.FC<TProps> = ({ expenses }) => {
   };
 
   const handleDelete = async (expenseId: number) => {
-    await removeExpense(expenseId);
+    await expensesService.remove(expenseId);
 
     dispatch(fetchExpenses());
   };

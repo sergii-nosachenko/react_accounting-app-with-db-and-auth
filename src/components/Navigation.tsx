@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import {
   Navbar,
   Container,
@@ -6,15 +7,17 @@ import {
   Icon,
   Level,
 } from 'react-bulma-components';
-
 import { useAppDispatch } from '../redux/hooks';
+
 import { setModalState } from '../redux/slices/modalSlice';
 import { setCurrentExpenseId } from '../redux/slices/expenseSlice';
 
 import { EModal } from '../types/Modal.enum';
+import { logout } from '../redux/slices/userSlice';
 
 const Navigation: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleNewExpense = () => {
     dispatch(setCurrentExpenseId(null));
@@ -23,6 +26,13 @@ const Navigation: React.FC = () => {
 
   const handleOpenProfile = () => {
     dispatch(setModalState(EModal.EDIT_USER));
+  };
+
+  const handleLogout = () => {
+    dispatch(logout())
+      .then(() => {
+        navigate('/');
+      });
   };
 
   return (
@@ -75,6 +85,7 @@ const Navigation: React.FC = () => {
                   color="danger"
                   outlined
                   className="is-align-self-center"
+                  onClick={handleLogout}
                 >
                   <Icon>
                     <i className="fa-solid fa-right-from-bracket" />

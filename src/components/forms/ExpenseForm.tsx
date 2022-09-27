@@ -6,7 +6,7 @@ import {
 } from 'react';
 import { Button, Form, Loader } from 'react-bulma-components';
 
-import { addExpense, getExpenseById, patchExpense } from '../../api/expenses';
+import { expensesService } from '../../services/expensesService';
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchExpenses } from '../../redux/slices/expenseSlice';
@@ -34,7 +34,10 @@ const ExpenseForm: React.FC = () => {
   const { variant } = useAppSelector(state => state.modal);
   const { currentExpenseId } = useAppSelector(state => state.expense);
 
-  const [currentExpense, setCurrentExpense] = useState<IExpense | null>(null);
+  const [
+    currentExpense,
+    setCurrentExpense,
+  ] = useState<IExpense | null>(null);
 
   const [formUser, setFormUser] = useState('');
   const [formTitle, setFormTitle] = useState('');
@@ -54,7 +57,7 @@ const ExpenseForm: React.FC = () => {
     setIsProcessing(true);
 
     if (variant === EModal.NEW_EXPENSE) {
-      addExpense({
+      expensesService.add({
         user: formUser,
         title: formTitle,
         category: formCategory,
@@ -78,7 +81,7 @@ const ExpenseForm: React.FC = () => {
         return;
       }
 
-      patchExpense({
+      expensesService.patch({
         id: currentExpense.id,
         user: formUser,
         title: formTitle,
@@ -114,10 +117,10 @@ const ExpenseForm: React.FC = () => {
 
     setIsLoading(true);
 
-    getExpenseById(currentExpenseId)
+    expensesService.getById(currentExpenseId)
       .then(result => setCurrentExpense(result))
       .finally(() => setIsLoading(false));
-  }, [currentExpenseId]);
+  }, []);
 
   useEffect(() => {
     if (!currentExpense) {

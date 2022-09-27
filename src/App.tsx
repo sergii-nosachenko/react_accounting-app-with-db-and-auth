@@ -1,27 +1,51 @@
+import { useEffect } from 'react';
 import {
   BrowserRouter as Router,
-  Navigate,
+  // Navigate,
   Route,
   Routes,
 } from 'react-router-dom';
 
 import Entry from './pages/Entry';
-import Main from './pages/Main';
+import Home from './pages/Home';
 
 import LoginForm from './components/forms/LoginForm';
 import RegistrationForm from './components/forms/RegistrationForm';
 import ResetPasswordForm from './components/forms/ResetPasswordForm';
+import NotFound from './components/NotFound';
+import { RequireAuth } from './components/RequireAuth';
+
+import { useAppDispatch } from './redux/hooks';
+import { checkAuth } from './redux/slices/userSlice';
 
 import '@fortawesome/fontawesome-free/css/all.css';
 import 'bulma/css/bulma.css';
 import './App.scss';
-import NotFound from './components/NotFound';
+import { AccountActivation } from './components/AccountActivation';
 
 export default function App() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, []);
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route
+          path="/"
+          element={(
+            <RequireAuth>
+              <Home />
+            </RequireAuth>
+          )}
+        >
+          <Route
+            path="home"
+            element={<Home />}
+          />
+        </Route>
 
         <Route
           path="/login"
@@ -42,6 +66,15 @@ export default function App() {
         />
 
         <Route
+          path="activate/:activationToken"
+          element={(
+            <Entry title="Registration">
+              <AccountActivation />
+            </Entry>
+          )}
+        />
+
+        <Route
           path="/reset-password"
           element={(
             <Entry title="Reset password">
@@ -50,7 +83,6 @@ export default function App() {
           )}
         />
 
-        <Route path="/main" element={<Main />} />
         <Route
           path="*"
           element={(
