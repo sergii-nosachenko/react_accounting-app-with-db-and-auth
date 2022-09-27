@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { getExpenses } from '../../api/expenses';
+import { expensesService } from '../../services/expensesService';
 
 import { IExpense } from '../../types/Expense.interface';
 import { EStatus } from '../../types/Status.enum';
@@ -8,7 +8,7 @@ import { EStatus } from '../../types/Status.enum';
 export const fetchExpenses = createAsyncThunk(
   'expense/fetchExpenses',
   async () => {
-    const response = await getExpenses();
+    const response = await expensesService.getAll();
 
     return response;
   },
