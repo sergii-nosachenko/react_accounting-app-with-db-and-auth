@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { IExpense } from '../types/Expense.interface';
 
-const BaseURL = 'https://node-accounting-app-with-db.onrender.com/expenses';
+const BaseURL = `${process.env.REACT_APP_API_URL}/expenses`;
 
 export const getExpenses = async () => {
   const data: IExpense[] = await axios.get(BaseURL)
