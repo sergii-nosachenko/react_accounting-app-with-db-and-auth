@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/react_accounting-app-with-db-and-auth/static/css/main.7c7cb427.css",
+    "main.js": "/react_accounting-app-with-db-and-auth/static/js/main.064a821e.js",
+    "static/media/fa-solid-900.ttf": "/react_accounting-app-with-db-and-auth/static/media/fa-solid-900.b48ad290d0335879a92b.ttf",
+    "static/media/fa-brands-400.ttf": "/react_accounting-app-with-db-and-auth/static/media/fa-brands-400.f9ee61fab3c11e2f3ed3.ttf",
+    "static/media/fa-solid-900.woff2": "/react_accounting-app-with-db-and-auth/static/media/fa-solid-900.66104b766c3d0462b3c5.woff2",
+    "static/media/fa-brands-400.woff2": "/react_accounting-app-with-db-and-auth/static/media/fa-brands-400.e1a247a5ef41e1975742.woff2",
+    "static/media/fa-regular-400.ttf": "/react_accounting-app-with-db-and-auth/static/media/fa-regular-400.abf801b7acb6705a15ad.ttf",
+    "static/media/fa-regular-400.woff2": "/react_accounting-app-with-db-and-auth/static/media/fa-regular-400.639d2000c1ece92eaec8.woff2",
+    "static/media/fa-v4compatibility.ttf": "/react_accounting-app-with-db-and-auth/static/media/fa-v4compatibility.f601162ae669f88823a3.ttf",
+    "static/media/fa-v4compatibility.woff2": "/react_accounting-app-with-db-and-auth/static/media/fa-v4compatibility.745989aab0d69cab7e70.woff2",
+    "index.html": "/react_accounting-app-with-db-and-auth/index.html",
+    "main.7c7cb427.css.map": "/react_accounting-app-with-db-and-auth/static/css/main.7c7cb427.css.map",
+    "main.064a821e.js.map": "/react_accounting-app-with-db-and-auth/static/js/main.064a821e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7c7cb427.css",
+    "static/js/main.064a821e.js"
+  ]
+}
