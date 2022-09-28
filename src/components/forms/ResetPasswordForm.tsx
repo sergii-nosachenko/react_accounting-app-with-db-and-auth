@@ -1,27 +1,119 @@
+import {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useState,
+} from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { Button, Form, Icon } from 'react-bulma-components';
-import { useAppSelector } from '../../redux/hooks';
+
+import {
+  Button,
+  Form,
+  Icon,
+  Notification,
+} from 'react-bulma-components';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { usePageError } from '../../hooks/usePageError';
+import { usePageSuccess } from '../../hooks/usePageSuccess';
+import { reset, setAuthError } from '../../redux/slices/userSlice';
+
+import { EStatus } from '../../types/Status.enum';
 
 const ResetPasswordForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user } = useAppSelector(state => state.user);
+  const {
+    user,
+    error: authError,
+    status,
+  } = useAppSelector(state => state.user);
+
+  const dispatch = useAppDispatch();
+
+  const [error, setError] = usePageError('');
+  const [success, setSuccess] = usePageSuccess('');
+
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+
+  const [requested, setRequested] = useState(false);
+
+  type TInputHandler = (event: ChangeEvent<HTMLInputElement>) => void;
+
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (status === EStatus.PENDING) {
+      return;
+    }
+
+    dispatch(reset(email));
+
+    setRequested(true);
+  };
+
+  const handleEmailChange: TInputHandler = (event) => {
+    setEmail(event.target.value);
+  };
+
+  useEffect(() => {
+    if (authError?.message) {
+      setError(authError.message);
+      dispatch(setAuthError({
+        ...authError,
+        message: '',
+      }));
+    }
+
+    if (authError?.errors?.email) {
+      setEmailError(authError.errors.email);
+      dispatch(setAuthError({
+        ...authError,
+        errors: {
+          ...authError.errors,
+          email: '',
+        },
+      }));
+    }
+  }, [authError]);
+
+  useEffect(() => {
+    if (!requested) {
+      return;
+    }
+
+    if (status === EStatus.SUCCESS) {
+      setSuccess('Email was sent successfully');
+      dispatch(setAuthError({}));
+
+      setTimeout(() => {
+        navigate('/');
+      }, 4000);
+    }
+
+    if (status === EStatus.ERROR) {
+      setRequested(false);
+    }
+  }, [requested, status]);
 
   if (user) {
     return <Navigate to="/home" state={{ from: location }} replace />;
   }
 
   return (
-    <form>
+    <form onSubmit={handleFormSubmit}>
       <Form.Field>
         <Form.Label htmlFor="email">
           Email
         </Form.Label>
-        <Form.Control className="has-icons-left">
+        <Form.Control>
           <Form.Input
             type="email"
             name="email"
+            value={email}
+            onChange={handleEmailChange}
+            color={emailError ? 'danger' : undefined}
             placeholder="e.g. bobsmith@gmail.com"
             required
           />
@@ -31,13 +123,44 @@ const ResetPasswordForm: React.FC = () => {
           >
             <i className="fa fa-envelope" />
           </Icon>
+          {emailError !== '' && (
+            <Icon
+              size="small"
+              align="right"
+              color="danger"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </Icon>
+          )}
         </Form.Control>
+        {emailError && (
+          <p className="help is-danger">{emailError}</p>
+        )}
       </Form.Field>
+
+      {error && (
+        <Form.Field>
+          <Notification color="danger" light>
+            {error}
+          </Notification>
+        </Form.Field>
+      )}
+
+      {success && (
+        <Form.Field>
+          <Notification color="success" light>
+            {success}
+          </Notification>
+        </Form.Field>
+      )}
 
       <Form.Field className="pt-4">
         <Button.Group>
           <Button
             color="danger"
+            type="submit"
+            loading={status === EStatus.PENDING}
+            disabled={email === '' || status === EStatus.PENDING}
           >
             <Icon>
               <i className="fa-solid fa-key" />

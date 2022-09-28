@@ -1,6 +1,7 @@
 import {
   ChangeEvent,
   FormEvent,
+  MouseEvent,
   useEffect,
   useState,
 } from 'react';
@@ -13,14 +14,20 @@ import {
   GoogleLoginButton,
 } from 'react-social-login-buttons';
 
-import { usePageError } from '../hooks/usePageError';
+import { useNavigate } from 'react-router-dom';
+import { ActivationSended } from '../ActivationSended';
+import { usePageError } from '../../hooks/usePageError';
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setModalState } from '../../redux/slices/modalSlice';
+import {
+  logout, patch, remove, setAuthError,
+} from '../../redux/slices/userSlice';
 
 import { EModal } from '../../types/Modal.enum';
 import { EStatus } from '../../types/Status.enum';
 import { validatePassword } from '../../utils/validators';
+import { usePageSuccess } from '../../hooks/usePageSuccess';
 
 const ProfileForm: React.FC = () => {
   const {
@@ -30,6 +37,9 @@ const ProfileForm: React.FC = () => {
   } = useAppSelector(state => state.user);
 
   const [error, setError] = usePageError('');
+  const [success, setSuccess] = usePageSuccess('');
+
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState(user?.username ?? '');
   const [email, setEmail] = useState(user?.email ?? '');
@@ -46,36 +56,92 @@ const ProfileForm: React.FC = () => {
   const [passwordNewError, setPasswordNewError] = useState('');
   const [passwordNewRepeatError, setPasswordNewRepeatError] = useState('');
 
+  const [activationRequired, setActivationRequired] = useState(false);
+  const [changed, setChanged] = useState(false);
+  const [removed, setRemoved] = useState(false);
+
   const dispatch = useAppDispatch();
 
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!user) {
+      return;
+    }
+
+    if (status === EStatus.PENDING) {
+      return;
+    }
+
+    dispatch(patch({
+      userId: user.id,
+      userData: {
+        username,
+        email,
+        password,
+        passwordNew,
+      },
+    }));
   };
 
   const handleCancel = () => {
     dispatch(setModalState(EModal.NONE));
   };
 
+  const handleRemove = (event: MouseEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (!user) {
+      return;
+    }
+
+    if (status === EStatus.PENDING) {
+      return;
+    }
+
+    setRemoved(true);
+
+    dispatch(remove({
+      userId: user.id,
+      password,
+    }));
+  };
+
   type TInputHandler = (event: ChangeEvent<HTMLInputElement>) => void;
 
   const handleUsernameChange: TInputHandler = (event) => {
     setUsername(event.target.value);
+    setChanged(true);
   };
 
   const handleEmailChange: TInputHandler = (event) => {
     setIsEmailChanged(event.target.value !== user?.email);
     setEmail(event.target.value);
+    setChanged(true);
   };
 
   const handlePasswordChange: TInputHandler = (event) => {
-    setPassword(event.target.value);
+    const { value } = event.target;
+
+    setPassword(value);
+    setChanged(true);
+
+    if (!value && passwordNew) {
+      setPasswordError('Password is required');
+
+      return;
+    }
+
+    setPasswordError('');
   };
 
   const handlePasswordNewChange: TInputHandler = (event) => {
     const { value } = event.target;
 
-    setIsNewPassword(event.target.value !== '');
-    setPasswordNew(event.target.value);
+    setIsNewPassword(value !== '');
+    setPasswordNew(value);
+    setChanged(true);
 
     if (value && !password) {
       setPasswordError('Password is required');
@@ -103,6 +169,7 @@ const ProfileForm: React.FC = () => {
     const { value } = event.target;
 
     setPasswordNewRepeat(value);
+    setChanged(true);
 
     if (!value && !passwordNew) {
       setPasswordNewRepeatError('');
@@ -121,25 +188,94 @@ const ProfileForm: React.FC = () => {
 
   useEffect(() => {
     if (authError.message) {
-      setError(authError.message);
+      setError(authError.message || '');
+      dispatch(setAuthError({
+        ...authError,
+        message: '',
+      }));
     }
 
-    if (authError.errors?.username) {
-      setUsernameError(authError.errors.username);
+    if (authError?.errors?.username) {
+      setUsernameError(authError?.errors?.username || '');
+      dispatch(setAuthError({
+        ...authError,
+        errors: {
+          ...authError.errors,
+          username: '',
+        },
+      }));
     }
 
-    if (authError.errors?.email) {
-      setEmailError(authError.errors.email);
+    if (authError?.errors?.email) {
+      setEmailError(authError?.errors?.email || '');
+      dispatch(setAuthError({
+        ...authError,
+        errors: {
+          ...authError.errors,
+          email: '',
+        },
+      }));
     }
 
-    if (authError.errors?.password) {
-      setPasswordError(authError.errors.password);
+    if (authError?.errors?.password) {
+      setPasswordError(authError?.errors?.password || '');
+      dispatch(setAuthError({
+        ...authError,
+        errors: {
+          ...authError.errors,
+          password: '',
+        },
+      }));
     }
 
-    if (authError.errors?.passwordNew) {
-      setPasswordError(authError.errors.passwordNew);
+    if (authError?.errors?.passwordNew) {
+      setPasswordNewError(authError?.errors?.passwordNew || '');
+      dispatch(setAuthError({
+        ...authError,
+        errors: {
+          ...authError.errors,
+          passwordNew: '',
+        },
+      }));
     }
   }, [authError]);
+
+  useEffect(() => {
+    if (removed) {
+      if (status === EStatus.ERROR) {
+        setRemoved(false);
+
+        return;
+      }
+
+      if (status === EStatus.PENDING) {
+        return;
+      }
+
+      dispatch(setAuthError({}));
+      dispatch(setModalState(EModal.NONE));
+      dispatch(logout())
+        .then(() => {
+          navigate('/');
+        });
+    }
+
+    if (changed) {
+      if (status === EStatus.SUCCESS) {
+        setChanged(false);
+        setSuccess('Changed successfully');
+        dispatch(setAuthError({}));
+
+        if (isEmailChanged) {
+          setActivationRequired(true);
+        }
+      }
+    }
+  }, [status]);
+
+  if (activationRequired) {
+    return <ActivationSended />;
+  }
 
   return (
     <form onSubmit={handleFormSubmit}>
@@ -255,7 +391,6 @@ const ProfileForm: React.FC = () => {
               <Form.Control>
                 <Form.Input
                   type="password"
-                  name="passwordNewRepeat"
                   value={passwordNewRepeat}
                   placeholder="Repeat new password"
                   onChange={handlePasswordNewRepeatChange}
@@ -304,6 +439,14 @@ const ProfileForm: React.FC = () => {
         </Form.Field>
       )}
 
+      {success && (
+        <Form.Field>
+          <Notification color="success" light>
+            {success}
+          </Notification>
+        </Form.Field>
+      )}
+
       <Form.Field
         kind="group"
         className="pt-4"
@@ -312,11 +455,13 @@ const ProfileForm: React.FC = () => {
           <Button
             color="success"
             type="submit"
+            disabled={!changed}
             loading={status === EStatus.PENDING}
           >
             Save
           </Button>
         </Form.Control>
+
         <Form.Control>
           <Button
             color="link"
@@ -325,6 +470,21 @@ const ProfileForm: React.FC = () => {
             disabled={status === EStatus.PENDING}
           >
             Cancel
+          </Button>
+        </Form.Control>
+
+        <Form.Control className="ml-auto">
+          <Button
+            color="danger"
+            inverted
+            tabIndex={-5}
+            onClick={handleRemove}
+            disabled={status === EStatus.PENDING}
+          >
+            <Icon>
+              <i className="fa-solid fa-user-slash" />
+            </Icon>
+            <span>Delete profile</span>
           </Button>
         </Form.Control>
       </Form.Field>

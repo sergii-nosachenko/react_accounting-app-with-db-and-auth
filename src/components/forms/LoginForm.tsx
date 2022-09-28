@@ -16,7 +16,7 @@ import {
 
 import { login, setAuthError } from '../../redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { usePageError } from '../hooks/usePageError';
+import { usePageError } from '../../hooks/usePageError';
 
 import { EStatus } from '../../types/Status.enum';
 
@@ -88,6 +88,7 @@ const LoginForm: React.FC = () => {
   useEffect(() => {
     if (authError.message) {
       setError(authError.message);
+      dispatch(setAuthError({}));
     }
   }, [authError]);
 

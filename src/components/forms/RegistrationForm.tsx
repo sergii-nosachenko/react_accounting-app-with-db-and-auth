@@ -17,11 +17,11 @@ import {
   GoogleLoginButton,
 } from 'react-social-login-buttons';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { register } from '../../redux/slices/userSlice';
+import { register, setAuthError } from '../../redux/slices/userSlice';
 import { EStatus } from '../../types/Status.enum';
 import { validateEmail, validatePassword } from '../../utils/validators';
 import { ActivationSended } from '../ActivationSended';
-import { usePageError } from '../hooks/usePageError';
+import { usePageError } from '../../hooks/usePageError';
 
 const RegistrationForm: React.FC = () => {
   const navigate = useNavigate();
@@ -56,20 +56,45 @@ const RegistrationForm: React.FC = () => {
   }, [status]);
 
   useEffect(() => {
-    if (authError.message) {
+    if (authError?.message) {
       setError(authError.message);
+      dispatch(setAuthError({
+        ...authError,
+        message: '',
+      }));
     }
 
-    if (authError.errors?.username) {
+    if (authError?.errors?.username) {
       setUsernameError(authError.errors.username);
+      dispatch(setAuthError({
+        ...authError,
+        errors: {
+          ...authError.errors,
+          username: '',
+        },
+      }));
     }
 
-    if (authError.errors?.email) {
+    if (authError?.errors?.email) {
       setEmailError(authError.errors.email);
+      dispatch(setAuthError({
+        ...authError,
+        errors: {
+          ...authError.errors,
+          email: '',
+        },
+      }));
     }
 
-    if (authError.errors?.password) {
+    if (authError?.errors?.password) {
       setPasswordError(authError.errors.password);
+      dispatch(setAuthError({
+        ...authError,
+        errors: {
+          ...authError.errors,
+          password: '',
+        },
+      }));
     }
   }, [authError]);
 
