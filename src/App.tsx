@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Navigate,
   Route,
   Routes,
