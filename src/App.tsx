@@ -22,6 +22,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import 'bulma/css/bulma.css';
 import './App.scss';
 import { AccountActivation } from './components/AccountActivation';
+import SetPasswordForm from './components/forms/SetPasswordForm';
 
 export default function App() {
   const dispatch = useAppDispatch();
@@ -51,7 +52,7 @@ export default function App() {
           path="/login"
           element={(
             <Entry title="Login to app">
-              <LoginForm />
+              <LoginForm key={Math.random()} />
             </Entry>
           )}
         />
@@ -60,16 +61,16 @@ export default function App() {
           path="/sign-up"
           element={(
             <Entry title="Registration">
-              <RegistrationForm />
+              <RegistrationForm key={Math.random()} />
             </Entry>
           )}
         />
 
         <Route
-          path="activate/:activationToken"
+          path="/activate/:activationToken"
           element={(
             <Entry title="Registration">
-              <AccountActivation />
+              <AccountActivation key={Math.random()} />
             </Entry>
           )}
         />
@@ -78,7 +79,16 @@ export default function App() {
           path="/reset-password"
           element={(
             <Entry title="Reset password">
-              <ResetPasswordForm />
+              <ResetPasswordForm key={Math.random()} />
+            </Entry>
+          )}
+        />
+
+        <Route
+          path="/reset-password/:resetToken"
+          element={(
+            <Entry title="Set new password">
+              <SetPasswordForm key={Math.random()} />
             </Entry>
           )}
         />
