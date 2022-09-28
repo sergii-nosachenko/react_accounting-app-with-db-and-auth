@@ -7,7 +7,7 @@ export const ActivationSended: React.FC = () => {
         <Icon color="success">
           <i className="fa-solid fa-check mr-4" />
         </Icon>
-        Registration successful
+        Successful
       </h1>
       <p>Check your email!</p>
       <p>We have sent you an email with the activation link.</p>
