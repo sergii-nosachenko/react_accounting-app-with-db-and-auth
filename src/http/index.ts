@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export function createClient() {
   return axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: 'https://node-accounting-app-with-db-and-auth.onrender.com',
     withCredentials: true,
     timeout: 10000,
   });
