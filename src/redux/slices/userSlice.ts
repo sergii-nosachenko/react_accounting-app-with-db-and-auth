@@ -1,12 +1,19 @@
-/* eslint-disable no-console */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice,
+  isPending,
+  isRejected,
+  isRejectedWithValue,
+  isFulfilled,
+} from '@reduxjs/toolkit';
 
 import { accessTokenService } from '../../services/accessTokenService';
 import {
   authService,
   TLoginData,
-  TRegisterData,
+  TUserData,
 } from '../../services/authService';
+import { userService } from '../../services/userService';
 
 import { IError } from '../../types/Error.interface';
 import { EStatus } from '../../types/Status.enum';
@@ -40,7 +47,7 @@ export const activate = createAsyncThunk(
 export const register = createAsyncThunk(
   'user/register',
   async (
-    userData: TRegisterData,
+    userData: TUserData,
     { rejectWithValue },
   ) => {
     const {
@@ -59,6 +66,125 @@ export const register = createAsyncThunk(
     }
 
     return user;
+  },
+);
+
+export const reset = createAsyncThunk(
+  'user/reset',
+  async (
+    email: string,
+    { rejectWithValue },
+  ) => {
+    const {
+      message,
+      errors,
+    } = await authService.reset(email);
+
+    if (message) {
+      const errorValue: IError = {
+        message,
+        errors,
+      };
+
+      return rejectWithValue(errorValue);
+    }
+
+    return true;
+  },
+);
+
+export const resetPassword = createAsyncThunk(
+  'user/resetPassword',
+  async (
+    resetData: {
+      password: string,
+      resetToken: string,
+    },
+    { rejectWithValue },
+  ) => {
+    const {
+      accessToken,
+      user,
+      message,
+      errors,
+    } = await authService.setPassword(resetData.password, resetData.resetToken);
+
+    if (!user || !accessToken) {
+      const errorValue: IError = {
+        message,
+        errors,
+      };
+
+      return rejectWithValue(errorValue);
+    }
+
+    accessTokenService.save(accessToken);
+
+    return user;
+  },
+);
+
+export const patch = createAsyncThunk(
+  'user/patch',
+  async (
+    patchData: {
+      userId: number,
+      userData: TUserData & { passwordNew: string },
+    },
+    { rejectWithValue },
+  ) => {
+    try {
+      const {
+        user,
+        message,
+        errors,
+      } = await userService.patch(patchData.userId, patchData.userData);
+
+      if (!user) {
+        const errorValue: IError = {
+          message,
+          errors,
+        };
+
+        return rejectWithValue(errorValue);
+      }
+
+      return user;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const remove = createAsyncThunk(
+  'user/delete',
+  async (
+    userData: {
+      userId: number,
+      password: string,
+    },
+    { rejectWithValue },
+  ) => {
+    try {
+      const {
+        user,
+        message,
+        errors,
+      } = await userService.remove(userData.userId, userData.password);
+
+      if (user !== null) {
+        const errorValue: IError = {
+          message,
+          errors,
+        };
+
+        return rejectWithValue(errorValue);
+      }
+
+      return user;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   },
 );
 
@@ -168,59 +294,74 @@ const userSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(register.pending, state => {
-        state.error = {};
-        state.status = EStatus.PENDING;
-      })
-      .addCase(register.fulfilled, state => {
-        state.error = {};
-        state.status = EStatus.SUCCESS;
-      })
-      .addCase(register.rejected, (state, action) => {
-        state.error = action.payload as IError;
-        state.status = EStatus.ERROR;
-      })
-      .addCase(activate.pending, state => {
-        state.error = {};
-        state.status = EStatus.PENDING;
+      .addCase(patch.fulfilled, (state, action) => {
+        state.user = action.payload;
       })
       .addCase(activate.fulfilled, (state, action) => {
         state.user = action.payload;
-        state.error = {};
-        state.status = EStatus.SUCCESS;
       })
-      .addCase(activate.rejected, (state, action) => {
+      .addCase(activate.rejected, state => {
         state.user = null;
-        state.error = action.payload as IError;
-        state.status = EStatus.ERROR;
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isChecked = true;
+        state.status = EStatus.IDLE;
       })
       .addCase(checkAuth.rejected, state => {
         state.user = null;
         state.isChecked = true;
-      })
-      .addCase(login.pending, state => {
-        state.error = {};
-        state.status = EStatus.PENDING;
+        state.status = EStatus.IDLE;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.user = action.payload;
-        state.error = {};
-        state.status = EStatus.SUCCESS;
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(login.rejected, state => {
         state.user = null;
-        state.error = action.payload as IError;
-        state.status = EStatus.ERROR;
       })
       .addCase(logout.fulfilled, state => {
         state.user = null;
       })
       .addCase(logout.rejected, state => {
         state.user = null;
+      })
+      .addCase(remove.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.user = action.payload;
+      });
+
+    builder
+      .addMatcher(isFulfilled, state => {
+        state.status = EStatus.SUCCESS;
+        state.error = {};
+      });
+
+    builder
+      .addMatcher(isRejected, state => {
+        state.status = EStatus.ERROR;
+      });
+
+    builder
+      .addMatcher(isRejectedWithValue, (state, action) => {
+        if (action.type.includes('checkAuth')) {
+          return;
+        }
+
+        state.error = (action.payload || {}) as IError;
+        state.status = EStatus.ERROR;
+      });
+
+    builder
+      .addMatcher(isPending, state => {
+        state.error = {};
+        state.status = EStatus.PENDING;
+      });
+
+    builder
+      .addDefaultCase(state => {
+        state.status = EStatus.IDLE;
       });
   },
 });
