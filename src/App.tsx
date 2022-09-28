@@ -32,7 +32,7 @@ export default function App() {
   }, []);
 
   return (
-    <Router basename="/react_accounting-app-with-db-and-auth">
+    <Router>
       <Routes>
         <Route
           path="/"

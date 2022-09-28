@@ -339,7 +339,11 @@ const userSlice = createSlice({
       });
 
     builder
-      .addMatcher(isRejected, state => {
+      .addMatcher(isRejected, (state, action) => {
+        if (action.type.includes('checkAuth')) {
+          return;
+        }
+
         state.status = EStatus.ERROR;
       });
 
