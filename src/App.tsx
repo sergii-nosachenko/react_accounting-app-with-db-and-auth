@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import {
   BrowserRouter as Router,
+  Navigate,
   Route,
   Routes,
 } from 'react-router-dom';
@@ -35,17 +36,17 @@ export default function App() {
       <Routes>
         <Route
           path="/"
+          element={<Navigate to="/login" replace />}
+        />
+
+        <Route
+          path="/home"
           element={(
             <RequireAuth>
               <Home />
             </RequireAuth>
           )}
-        >
-          <Route
-            path="home"
-            element={<Home />}
-          />
-        </Route>
+        />
 
         <Route
           path="/login"
