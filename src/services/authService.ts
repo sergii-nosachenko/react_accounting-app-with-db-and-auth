@@ -1,7 +1,7 @@
 import { authClient } from '../http/authClient';
 import { IUser } from '../types/User.interface';
 
-export type TRegisterData = {
+export type TUserData = {
   username: string;
   email: string;
   password: string;
@@ -12,14 +12,14 @@ export type TLoginData = {
   password: string;
 };
 
-type TAuthResponse = {
-  user?: IUser;
+export type TAuthResponse = {
+  user?: IUser | null;
   accessToken?: string;
   message?: string;
   errors?: {};
 };
 
-function register(userData: TRegisterData) {
+function register(userData: TUserData) {
   return authClient.post<null, TAuthResponse>('/auth/registration', userData);
 }
 
@@ -37,6 +37,17 @@ function activate(activationToken: string) {
   return authClient.get<null, TAuthResponse>(`/auth/activation/${activationToken}`);
 }
 
+function reset(email: string) {
+  return authClient.post<null, TAuthResponse>('/auth/reset', { email });
+}
+
+function setPassword(password: string, resetToken: string) {
+  return authClient.post<null, TAuthResponse>('/auth/set-password', {
+    password,
+    resetToken,
+  });
+}
+
 function refresh() {
   return authClient.get<null, TAuthResponse>('/auth/refresh');
 }
@@ -47,4 +58,6 @@ export const authService = {
   logout,
   activate,
   refresh,
+  reset,
+  setPassword,
 };
