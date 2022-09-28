@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { setModalState } from '../redux/slices/modalSlice';
 
 import { EModal } from '../types/Modal.enum';
+import { setAuthError } from '../redux/slices/userSlice';
 
 const ExpenseModal: React.FC = () => {
   const { variant } = useAppSelector(state => state.modal);
@@ -15,6 +16,7 @@ const ExpenseModal: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const handleCloseModal = () => {
+    dispatch(setAuthError({}));
     dispatch(setModalState(EModal.NONE));
   };
 
@@ -53,13 +55,13 @@ const ExpenseModal: React.FC = () => {
           {
             (variant === EModal.NEW_EXPENSE || variant === EModal.EDIT_EXPENSE)
             && (
-              <ExpenseForm />
+              <ExpenseForm key={Math.random()} />
             )
           }
           {
             (variant === EModal.EDIT_USER)
             && (
-              <ProfileForm />
+              <ProfileForm key={Math.random()} />
             )
           }
         </Modal.Card.Body>
