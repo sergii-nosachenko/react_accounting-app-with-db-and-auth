@@ -1,6 +1,7 @@
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { accessTokenService } from '../services/accessTokenService';
+
 import { createClient } from './index';
+import { accessTokenService } from '../services/accessTokenService';
 
 export const authClient = createClient();
 

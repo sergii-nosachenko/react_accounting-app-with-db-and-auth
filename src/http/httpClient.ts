@@ -26,6 +26,12 @@ function onRequest(request: AxiosRequestConfig) {
 }
 
 function onResponseSuccess(res: AxiosResponse) {
+  const { accessToken } = res.data;
+
+  if (accessToken) {
+    accessTokenService.save(accessToken);
+  }
+
   return res.data;
 }
 
@@ -33,7 +39,9 @@ async function onResponseError(error: AxiosError) {
   const originalRequest = error.config;
 
   if (error?.response?.status !== 401) {
-    throw new Error('Error in response');
+    return error.response?.data || {
+      message: error.message || 'Error in response',
+    };
   }
 
   const data = await authService.refresh();
@@ -41,7 +49,7 @@ async function onResponseError(error: AxiosError) {
   const { accessToken, message } = data;
 
   if (!accessToken) {
-    throw new Error(message || 'Error in response');
+    return { message: message || 'Error in response' };
   }
 
   accessTokenService.save(accessToken);
