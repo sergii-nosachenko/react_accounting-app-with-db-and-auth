@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import {
   BrowserRouter as Router,
-  // Navigate,
   Route,
   Routes,
 } from 'react-router-dom';
@@ -32,7 +31,7 @@ export default function App() {
   }, []);
 
   return (
-    <Router>
+    <Router basename="/react_accounting-app-with-db-and-auth">
       <Routes>
         <Route
           path="/"
