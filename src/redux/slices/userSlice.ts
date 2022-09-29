@@ -306,12 +306,10 @@ const userSlice = createSlice({
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isChecked = true;
-        state.status = EStatus.IDLE;
       })
       .addCase(checkAuth.rejected, state => {
         state.user = null;
         state.isChecked = true;
-        state.status = EStatus.IDLE;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.user = action.payload;
@@ -333,7 +331,11 @@ const userSlice = createSlice({
       });
 
     builder
-      .addMatcher(isFulfilled, state => {
+      .addMatcher(isFulfilled, (state, action) => {
+        if (action.type.includes('checkAuth')) {
+          return;
+        }
+
         state.status = EStatus.SUCCESS;
         state.error = {};
       });
@@ -358,7 +360,11 @@ const userSlice = createSlice({
       });
 
     builder
-      .addMatcher(isPending, state => {
+      .addMatcher(isPending, (state, action) => {
+        if (action.type.includes('checkAuth')) {
+          return;
+        }
+
         state.error = {};
         state.status = EStatus.PENDING;
       });
