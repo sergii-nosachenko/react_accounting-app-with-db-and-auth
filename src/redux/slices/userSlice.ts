@@ -352,7 +352,7 @@ const userSlice = createSlice({
 
     builder
       .addMatcher(isFulfilled, (state, action) => {
-        const type: string = action.type.split('/').slice(-1)[0];
+        const type: string = action.type.split('/')[1] || '';
 
         if (type === 'checkAuth') {
           return;
@@ -367,7 +367,7 @@ const userSlice = createSlice({
 
     builder
       .addMatcher(isRejected, (state, action) => {
-        const type: string = action.type.split('/').slice(-1)[0];
+        const type: string = action.type.split('/')[1] || '';
 
         if (type === 'checkAuth') {
           return;
@@ -380,7 +380,7 @@ const userSlice = createSlice({
 
     builder
       .addMatcher(isRejectedWithValue, (state, action) => {
-        const type: string = action.type.split('/').slice(-1)[0];
+        const type: string = action.type.split('/')[1] || '';
 
         if (type === 'checkAuth') {
           return;
@@ -395,7 +395,7 @@ const userSlice = createSlice({
 
     builder
       .addMatcher(isPending, (state, action) => {
-        const type: string = action.type.split('/').slice(-1)[0];
+        const type: string = action.type.split('/')[1] || '';
 
         if (type === 'checkAuth') {
           return;
