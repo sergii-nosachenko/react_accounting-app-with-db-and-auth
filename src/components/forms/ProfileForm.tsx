@@ -489,9 +489,6 @@ const ProfileForm: React.FC = () => {
             inverted
             tabIndex={-5}
             onClick={handleRemove}
-            loading={
-              status.remove === EStatus.PENDING
-            }
             disabled={
               status.patch === EStatus.PENDING
                 || status.remove === EStatus.PENDING
