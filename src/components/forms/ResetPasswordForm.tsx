@@ -44,7 +44,7 @@ const ResetPasswordForm: React.FC = () => {
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (status === EStatus.PENDING) {
+    if (status.reset === EStatus.PENDING) {
       return;
     }
 
@@ -83,7 +83,7 @@ const ResetPasswordForm: React.FC = () => {
       return;
     }
 
-    if (status === EStatus.SUCCESS) {
+    if (status.reset === EStatus.SUCCESS) {
       setSuccess('Email was sent successfully');
       dispatch(setAuthError({}));
 
@@ -92,7 +92,7 @@ const ResetPasswordForm: React.FC = () => {
       }, 4000);
     }
 
-    if (status === EStatus.ERROR) {
+    if (status.reset === EStatus.ERROR) {
       setRequested(false);
     }
   }, [requested, status]);
@@ -159,8 +159,8 @@ const ResetPasswordForm: React.FC = () => {
           <Button
             color="danger"
             type="submit"
-            loading={status === EStatus.PENDING}
-            disabled={email === '' || status === EStatus.PENDING}
+            loading={status.reset === EStatus.PENDING}
+            disabled={email === '' || status.reset === EStatus.PENDING}
           >
             <Icon>
               <i className="fa-solid fa-key" />

@@ -69,7 +69,7 @@ const ProfileForm: React.FC = () => {
       return;
     }
 
-    if (status === EStatus.PENDING) {
+    if (status.patch === EStatus.PENDING) {
       return;
     }
 
@@ -96,7 +96,7 @@ const ProfileForm: React.FC = () => {
       return;
     }
 
-    if (status === EStatus.PENDING) {
+    if (status.remove === EStatus.PENDING) {
       return;
     }
 
@@ -242,13 +242,13 @@ const ProfileForm: React.FC = () => {
 
   useEffect(() => {
     if (removed) {
-      if (status === EStatus.ERROR) {
+      if (status.remove === EStatus.ERROR) {
         setRemoved(false);
 
         return;
       }
 
-      if (status === EStatus.PENDING) {
+      if (status.remove === EStatus.PENDING) {
         return;
       }
 
@@ -261,7 +261,7 @@ const ProfileForm: React.FC = () => {
     }
 
     if (changed) {
-      if (status === EStatus.SUCCESS) {
+      if (status.patch === EStatus.SUCCESS) {
         setChanged(false);
         setSuccess('Changed successfully');
         dispatch(setAuthError({}));
@@ -455,8 +455,15 @@ const ProfileForm: React.FC = () => {
           <Button
             color="success"
             type="submit"
-            disabled={!changed}
-            loading={status === EStatus.PENDING}
+            disabled={
+              !changed
+                || status.patch === EStatus.PENDING
+                || status.remove === EStatus.PENDING
+            }
+            loading={
+              status.patch === EStatus.PENDING
+                || status.remove === EStatus.PENDING
+            }
           >
             Save
           </Button>
@@ -467,7 +474,10 @@ const ProfileForm: React.FC = () => {
             color="link"
             colorVariant="light"
             onClick={handleCancel}
-            disabled={status === EStatus.PENDING}
+            disabled={
+              status.patch === EStatus.PENDING
+                || status.remove === EStatus.PENDING
+            }
           >
             Cancel
           </Button>
@@ -479,7 +489,13 @@ const ProfileForm: React.FC = () => {
             inverted
             tabIndex={-5}
             onClick={handleRemove}
-            disabled={status === EStatus.PENDING}
+            loading={
+              status.remove === EStatus.PENDING
+            }
+            disabled={
+              status.patch === EStatus.PENDING
+                || status.remove === EStatus.PENDING
+            }
           >
             <Icon>
               <i className="fa-solid fa-user-slash" />

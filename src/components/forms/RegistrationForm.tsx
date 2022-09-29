@@ -50,7 +50,7 @@ const RegistrationForm: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (status === EStatus.SUCCESS) {
+    if (status.register === EStatus.SUCCESS) {
       setRegistered(true);
     }
   }, [status]);
@@ -105,9 +105,11 @@ const RegistrationForm: React.FC = () => {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    if (status === EStatus.PENDING) {
+    if (status.register === EStatus.PENDING) {
       return;
     }
+
+    setRegistered(false);
 
     dispatch(register({
       username,
@@ -364,7 +366,7 @@ const RegistrationForm: React.FC = () => {
           <Button
             color="success"
             type="submit"
-            loading={status === EStatus.PENDING}
+            loading={status.register === EStatus.PENDING}
           >
             <Icon>
               <i className="fa-solid fa-user-plus" />
@@ -376,7 +378,7 @@ const RegistrationForm: React.FC = () => {
             outlined
             className="ml-auto"
             onClick={() => navigate('/login')}
-            disabled={status === EStatus.PENDING}
+            disabled={status.register === EStatus.PENDING}
           >
             <Icon>
               <i className="fa-solid fa-right-to-bracket" />

@@ -47,7 +47,7 @@ const SetPasswordForm: React.FC = () => {
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (status === EStatus.PENDING) {
+    if (status.resetPassword === EStatus.PENDING) {
       return;
     }
 
@@ -125,7 +125,7 @@ const SetPasswordForm: React.FC = () => {
   }, [authError]);
 
   useEffect(() => {
-    if (status === EStatus.SUCCESS) {
+    if (status.resetPassword === EStatus.SUCCESS) {
       dispatch(setAuthError({}));
 
       navigate('/');
@@ -218,11 +218,11 @@ const SetPasswordForm: React.FC = () => {
           <Button
             color="success"
             type="submit"
-            loading={status === EStatus.PENDING}
+            loading={status.resetPassword === EStatus.PENDING}
             disabled={
               password === ''
               || passwordRepeat === ''
-              || status === EStatus.PENDING
+              || status.resetPassword === EStatus.PENDING
             }
           >
             <Icon>

@@ -25,7 +25,7 @@ export const AccountActivation: React.FC = () => {
   }, [activationToken]);
 
   useEffect(() => {
-    if (status === EStatus.SUCCESS) {
+    if (status.activate === EStatus.SUCCESS) {
       navigate('/home');
     }
   }, [status]);
@@ -33,7 +33,7 @@ export const AccountActivation: React.FC = () => {
   return (
     <Content textAlign="center">
       <h1>
-        {status === EStatus.PENDING && (
+        {status.activate === EStatus.PENDING && (
           <Icon>
             <i className="fas fa-spinner fa-pulse mr-4" />
           </Icon>

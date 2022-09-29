@@ -157,7 +157,7 @@ export const patch = createAsyncThunk(
 );
 
 export const remove = createAsyncThunk(
-  'user/delete',
+  'user/remove',
   async (
     userData: {
       userId: number,
@@ -252,18 +252,38 @@ export const logout = createAsyncThunk(
   },
 );
 
+type TStatuses = {
+  patch: EStatus;
+  activate: EStatus;
+  remove: EStatus;
+  register: EStatus;
+  login: EStatus;
+  logout: EStatus;
+  reset: EStatus;
+  resetPassword: EStatus;
+};
+
 type TUserState = {
   user: IUser | null;
   isChecked: boolean;
   error: IError;
-  status: EStatus;
+  status: TStatuses;
 };
 
 const initialState: TUserState = {
   user: null,
   isChecked: false,
   error: {},
-  status: EStatus.IDLE,
+  status: {
+    patch: EStatus.IDLE,
+    activate: EStatus.IDLE,
+    remove: EStatus.IDLE,
+    register: EStatus.IDLE,
+    login: EStatus.IDLE,
+    logout: EStatus.IDLE,
+    reset: EStatus.IDLE,
+    resetPassword: EStatus.IDLE,
+  },
 };
 
 /* eslint-disable no-param-reassign */
@@ -332,50 +352,68 @@ const userSlice = createSlice({
 
     builder
       .addMatcher(isFulfilled, (state, action) => {
-        if (action.type.includes('checkAuth')) {
+        const type: string = action.type.split('/').slice(-1)[0];
+
+        if (type === 'checkAuth') {
           return;
         }
 
-        state.status = EStatus.SUCCESS;
         state.error = {};
+
+        if (type in state.status) {
+          state.status[type as keyof TStatuses] = EStatus.SUCCESS;
+        }
       });
 
     builder
       .addMatcher(isRejected, (state, action) => {
-        if (action.type.includes('checkAuth')) {
+        const type: string = action.type.split('/').slice(-1)[0];
+
+        if (type === 'checkAuth') {
           return;
         }
 
-        state.status = EStatus.ERROR;
+        if (type in state.status) {
+          state.status[type as keyof TStatuses] = EStatus.ERROR;
+        }
       });
 
     builder
       .addMatcher(isRejectedWithValue, (state, action) => {
-        if (action.type.includes('checkAuth')) {
+        const type: string = action.type.split('/').slice(-1)[0];
+
+        if (type === 'checkAuth') {
           return;
         }
 
         state.error = (action.payload || {}) as IError;
-        state.status = EStatus.ERROR;
+
+        if (type in state.status) {
+          state.status[type as keyof TStatuses] = EStatus.ERROR;
+        }
       });
 
     builder
       .addMatcher(isPending, (state, action) => {
-        if (action.type.includes('checkAuth')) {
+        const type: string = action.type.split('/').slice(-1)[0];
+
+        if (type === 'checkAuth') {
           return;
         }
 
         state.error = {};
-        state.status = EStatus.PENDING;
-      });
 
-    builder
-      .addDefaultCase(state => {
-        state.status = EStatus.IDLE;
+        if (type in state.status) {
+          state.status[type as keyof TStatuses] = EStatus.PENDING;
+        }
       });
   },
 });
 /* eslint-enable no-param-reassign */
 
-export const { setUser, setIsChecked, setAuthError } = userSlice.actions;
+export const {
+  setUser,
+  setIsChecked,
+  setAuthError,
+} = userSlice.actions;
 export default userSlice.reducer;

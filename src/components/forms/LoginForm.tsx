@@ -45,7 +45,7 @@ const LoginForm: React.FC = () => {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    if (status === EStatus.PENDING) {
+    if (status.login === EStatus.PENDING) {
       return;
     }
 
@@ -189,7 +189,7 @@ const LoginForm: React.FC = () => {
           <Button
             color="success"
             type="submit"
-            loading={status === EStatus.PENDING}
+            loading={status.login === EStatus.PENDING}
           >
             <Icon>
               <i className="fa-solid fa-right-to-bracket" />
@@ -201,7 +201,7 @@ const LoginForm: React.FC = () => {
             inverted
             className="ml-auto mr-2"
             onClick={() => navigate('/sign-up')}
-            disabled={status === EStatus.PENDING}
+            disabled={status.login === EStatus.PENDING}
           >
             <Icon>
               <i className="fa-solid fa-user-plus" />
@@ -213,7 +213,7 @@ const LoginForm: React.FC = () => {
             inverted
             color="danger"
             onClick={() => navigate('/reset-password')}
-            disabled={status === EStatus.PENDING}
+            disabled={status.login === EStatus.PENDING}
           >
             <Icon>
               <i className="fa-solid fa-key" />
